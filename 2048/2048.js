@@ -4,7 +4,6 @@
 const BOARD_SIZE = 4;
 let gameBoard;
 var i,j;
-
 function initGameBoard(){
     gameBoard = [];
     for(i=0;i<BOARD_SIZE;i++){
@@ -52,9 +51,9 @@ function addTile(){
             }
         }
     }
-    for(i = 0;i<emptyCellList.length;i++){
+    /*for(i = 0;i<emptyCellList.length;i++){
        console.log(emptyCellList[i]);
-    }
+    }*/
 
 
     //select a cell
@@ -77,8 +76,69 @@ function addTile(){
 
 }
 
-function handleInput(){
 
+var direction;
+
+/*const keyMap = {
+    ArrowUp: {xMove: 0, yMove: -1},
+    ArrowDown: {xMove: 0, yMove: 1},
+    ArrowLeft: {xMove: -1, yMove: 0},
+    ArrowRight: {xMove: 1, yMove: 0},
+};*/
+const keyMap = {
+    ArrowUp: {xMove: -1, yMove: 0},
+    ArrowDown: {xMove: 1, yMove: 0},
+    ArrowLeft: {xMove: 0, yMove: -1},
+    ArrowRight: {xMove: 0, yMove: 1},
+};
+//function to interpret keyboard input logic: create a map for arrow buttons,  assign to a direction variable and passed to moveTiles()
+function handleKeyPress(event){
+    
+    direction = keyMap[event.key];
+    console.log(direction.xMove, direction.yMove);
+    moveAllTiles(direction.xMove, direction.yMove);
+
+}
+//check if new location is inside the board
+function isValidPosition(row, col) {
+    return row >= 0 && row < BOARD_SIZE && col >= 0 && col < BOARD_SIZE;
+}
+
+//function to move all tiles based on direction. takes movement vector as input split into x/y variables.
+function moveAllTiles(rowMove, colMove){
+    let row, col;
+    
+    let startingRow =0, startingCol = 0; // if row movement is 1(down) start at last row
+    if (rowMove > 0)
+        startingRow = BOARD_SIZE - 1;
+    if (colMove < 0)
+        startingCol = BOARD_SIZE - 1;
+
+    //console.log(startingRow,startingCol);
+
+
+    for(row=0;row<BOARD_SIZE;row++){
+ 
+        //inner loop to move each cell to new coordinates
+        for(col=0;col<BOARD_SIZE;col++){
+            moveTile(row,col, row+rowMove, col+colMove);
+        }
+    }
+    displayGameBoard(gameBoard);
+}
+
+//get coordinates of new cell, swap values
+function moveTile(row, col, newRow, newCol){
+    const currVal = gameBoard[row][col];
+
+    gameBoard[row][col] = 0;
+    if(isValidPosition(newRow,newCol)){
+       gameBoard[newRow][newCol] = currVal;
+    }
+    else{
+        console.error("print out of bounds");
+    }
+    
 }
 
 function startGame(){
@@ -87,9 +147,10 @@ function startGame(){
     initGameBoard();
     addTile();
     addTile();
-    displayGameBoard(gameBoard)
+    displayGameBoard(gameBoard);
 }
 
 
-//listen for start button click, then run startGame()
-document.getElementById('start').addEventListener('click', startGame);
+//listeners for user input
+document.getElementById('start').addEventListener('click', startGame); //listen for click button id "start"
+document.addEventListener('keydown', handleKeyPress); //listen for arrow press
