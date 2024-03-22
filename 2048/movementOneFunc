@@ -1,0 +1,38 @@
+//function to move all tiles based on direction. takes movement vector as input split into x/y variables. Keypressed represents the actual key, direction is the row/col change from keyMap
+//logic: so as not to lose the date in the final portion of the array, right and down need to start with the in highest the largest row/col respectively 
+// left/up: row= 0, col = 0
+// down: row = 3, col = 0
+// right: row = 0, col = 0 
+/*function handleKeyPress(event){
+    
+    direction = keyMap[event.key];
+    moveAllTiles(event.key, direction);
+}*/
+function moveAllTilesDepricated(keyPressed, direction){
+    var row, col;
+    var endRow = BOARD_SIZE-1;
+    var endCol = BOARD_SIZE- 1;
+    var startRow = 0;
+    var startCol = 0;
+
+    if(direction.colChange < 0){
+        startCol = 3;
+    }
+    if(direction.rowChange < 0){
+        startRow = 3;
+    }
+
+    console.log(keyPressed, direction);
+    for(row = startRow;row<endRow;row++){
+        let nextRow = row+direction.rowChange;
+        let nextCol = col + direction.colChange;
+        for(col = startCol;col<endCol;col++){
+                gameBoard[nextRow][nextCol] = gameBoard[row][col];
+                    
+
+                    //moveTile(row,col, row+rowMove, col+colMove);
+                    
+
+        }
+    }
+}
