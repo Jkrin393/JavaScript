@@ -59,6 +59,8 @@ function moveDown(gameboard) {
 
 function moveAllTiles(keyPressed, gameBoard){
     
+
+    console.log(keyPressed);
     switch (keyPressed) {
         case `ArrowLeft`:
             moveLeft(gameBoard);
@@ -76,6 +78,8 @@ function moveAllTiles(keyPressed, gameBoard){
             console.log("not recognized");
             break;
     }
+    addTile(gameBoard);
+    return gameBoard;
         
 
 }

@@ -12,15 +12,18 @@ function initGameBoard(){
         gameBoard.push(newRow);
     }
     let num = 1;
-    for(i=0;i<BOARD_SIZE;i++){
+
+    addTile(gameBoard);
+    addTile(gameBoard);
+    return gameBoard;
+    
+}
+
+
+    /*for(i=0;i<BOARD_SIZE;i++){
         
         for(j=0;j<BOARD_SIZE;j++){
             gameBoard[i][j] = num;    
             num++;
         }
-    }
-    //addTile();
-    //addTile();
-    return gameBoard;
-    
-}
+    }*/

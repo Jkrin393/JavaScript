@@ -1,6 +1,6 @@
 //add either a two or a four to a random open spot in the board. Logic: create a list of empty cell's coordiantes, then randomize which one is chosen
 
-function addTile(){
+function addTile(gameBoard){
     var emptyCellList = [];
     //add empty cell address to list
     for(i = 0;i<gameBoard.length;i++){
@@ -17,14 +17,16 @@ function addTile(){
     }
     else{
         console.log("game over");
+        return;
     }
 
     //select a value 
     var randSeed = Math.random();
     emptyCellValue = randSeed < .6 ? 2:4; 
 
-    //put it all together. pull the x,y tuple values from the emptyCellList, assign them to the x/y coords from the game grid, then add the value
+    //put it all together. pull the x,y values from the emptyCellList, assign them to the x/y coords from the game grid, then add the value
     const {xCoord, yCoord} = emptyCellList[randCell];
     gameBoard[xCoord][yCoord] = emptyCellValue;
+    
 }
 

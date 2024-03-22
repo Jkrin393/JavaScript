@@ -1,38 +1,72 @@
-//function to move all tiles based on direction. takes movement vector as input split into x/y variables. Keypressed represents the actual key, direction is the row/col change from keyMap
-//logic: so as not to lose the date in the final portion of the array, right and down need to start with the in highest the largest row/col respectively 
-// left/up: row= 0, col = 0
-// down: row = 3, col = 0
-// right: row = 0, col = 0 
+/*function to move all tiles based on direction. takes movement vector as input split into x/y variables. Keypressed represents the actual key, direction is the row/col change from keyMap
+logic: so as not to lose the date in the final portion of the array, right and down need to start with the in highest the largest row/col respectively 
+left/up: row= 0, col = 0
+down: row = 3, col = 0
+right: row = 0, col = 0 
+
+     1  2  3  4
+A   [0, 0, 0, 0]
+B   [0, 0, 2, 0]
+C   [0, 0, 0, 0]
+D   [0, 0, 0, 0]
+
+ref: B3 - arr[1][2] == 2
+
+*/
+
+//******iteration/idea 2) use temporary gameboard to create new gameboard
+
 /*function handleKeyPress(event){
     
     direction = keyMap[event.key];
     moveAllTiles(event.key, direction);
 }*/
-function moveAllTilesDepricated(keyPressed, direction){
-    var row, col;
-    var endRow = BOARD_SIZE-1;
-    var endCol = BOARD_SIZE- 1;
-    var startRow = 0;
-    var startCol = 0;
+/*START OF FUNCTIONAL CODE */
 
-    if(direction.colChange < 0){
-        startCol = 3;
+//check if new location is inside the board
+//invalid cases - new position is not empty, new position is out of bounds, new position is current position 
+function isInBounds(i, j, currRow, currCol, tempGrid) {
+    return  i >= 0 && i < BOARD_SIZE && //row is in bounds
+            j >= 0 && j < BOARD_SIZE && //col is in bounds
+            !(i === currRow && j === currCol); // new position is not itself
+        
+
+
+}
+
+//need to take in gameBoard - old parameters func moveAllTilesDepricated(keyPressed, direction)
+function moveAllTilesDepricated(direction, gameBoard){
+
+    var newBoard = new Array();
+    var numRows = gameBoard.length;
+    var numCols = gameBoard[0].length;
+    var newRow, newCol;
+    var i, j; 
+    var rowMoveDirection, colMoveDirection;
+    
+    //create empty temp arr
+    for(let i = 0;i<numRows;i++){
+      newBoard.push(Array(numCols).fill(0)); // push() returns array length, not array itself
     }
-    if(direction.rowChange < 0){
-        startRow = 3;
-    }
+    
+    for(i = 0; i < numRows; i++) {
+        for(j = 0; j < numCols; j++) {
+            let currTile = gameBoard[i][j];
+            if(currTile !== 0) {
+                newRow = i;
+                newCol = j;
+                rowMoveDirection = inputKeyMap[direction].rowChange;
+                colMoveDirection = inputKeyMap[direction].colChange;
 
-    console.log(keyPressed, direction);
-    for(row = startRow;row<endRow;row++){
-        let nextRow = row+direction.rowChange;
-        let nextCol = col + direction.colChange;
-        for(col = startCol;col<endCol;col++){
-                gameBoard[nextRow][nextCol] = gameBoard[row][col];
-                    
-
-                    //moveTile(row,col, row+rowMove, col+colMove);
-                    
-
+                while (isInBounds(i,j,newRow,newCol, newBoard)) {
+                    newRow += inputKeyMap[direction].rowChange;
+                    newCol += inputKeyMap[direction].colChange;
+                }
+                newBoard[newRow][newCol] = currTile;
+            }
         }
     }
+    addTile(newBoard);
+    return newBoard;
+   
 }
