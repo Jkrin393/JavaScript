@@ -9,9 +9,7 @@ A   [0, 0, 0, 0]
 B   [0, 0, 2, 0]
 C   [0, 0, 0, 0]
 D   [0, 0, 0, 0]
-
 ref: B3 - arr[1][2] == 2
-
 */
 
 //******iteration/idea 2) use temporary gameboard to create new gameboard
@@ -25,48 +23,56 @@ ref: B3 - arr[1][2] == 2
 
 //check if new location is inside the board
 //invalid cases - new position is not empty, new position is out of bounds, new position is current position 
-function isInBounds(i, j, currRow, currCol, tempGrid) {
-    return  i >= 0 && i < BOARD_SIZE && //row is in bounds
-            j >= 0 && j < BOARD_SIZE && //col is in bounds
-            !(i === currRow && j === currCol); // new position is not itself
-        
+function isInBounds(currRow, currCol, newRow, newCol, tempGrid) {
 
+
+    let rowInBounds = currRow >= 0 && currRow < BOARD_SIZE;
+    let colInBounds =  currCol >= 0 && currCol < BOARD_SIZE;
+    let notSelf =  !(currRow === newRow && currCol === newCol);
+    let isEmpty =  tempGrid[newRow][newCol] === 0;
+
+
+    //return  true when the row and col are in the grid, the new cell is not the current, and the new cell is available
+    return (rowInBounds && colInBounds) && (notSelf) && (isEmpty);
 
 }
 
+
 //need to take in gameBoard - old parameters func moveAllTilesDepricated(keyPressed, direction)
-function moveAllTilesDepricated(direction, gameBoard){
+function moveAllTilesOne(direction, gameBoard){
 
     var newBoard = new Array();
     var numRows = gameBoard.length;
     var numCols = gameBoard[0].length;
-    var newRow, newCol;
-    var i, j; 
-    var rowMoveDirection, colMoveDirection;
-    
+    var rowMoveDirection = inputKeyMap[direction].rowChange;
+    var colMoveDirection = inputKeyMap[direction].colChange;
+
+
     //create empty temp arr
     for(let i = 0;i<numRows;i++){
       newBoard.push(Array(numCols).fill(0)); // push() returns array length, not array itself
     }
     
-    for(i = 0; i < numRows; i++) {
-        for(j = 0; j < numCols; j++) {
-            let currTile = gameBoard[i][j];
+    for(let gridRow = 0; gridRow < numRows; gridRow++) {
+        for(let gridCol = 0; gridCol < numCols; gridCol++) {
+            let currTile = gameBoard[gridRow][gridCol];
             if(currTile !== 0) {
-                newRow = i;
-                newCol = j;
-                rowMoveDirection = inputKeyMap[direction].rowChange;
-                colMoveDirection = inputKeyMap[direction].colChange;
+                let newTileRow = gridRow;
+                let newTileCol = gridCol;
 
-                while (isInBounds(i,j,newRow,newCol, newBoard)) {
-                    newRow += inputKeyMap[direction].rowChange;
-                    newCol += inputKeyMap[direction].colChange;
+                if (isInBounds(gridRow,gridCol,newTileRow+rowMoveDirection,newTileCol+colMoveDirection, newBoard)) {
+                    newTileRow += rowMoveDirection;
+                    newTileCol += colMoveDirection;
+                    newBoard[newTileRow][newTileCol] = currTile;
                 }
-                newBoard[newRow][newCol] = currTile;
+                //newBoard[gridRow][gridCol] = 0;
+
+
             }
         }
     }
     addTile(newBoard);
+
     return newBoard;
    
 }

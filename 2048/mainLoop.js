@@ -25,10 +25,11 @@ const inputKeyMap = {
     ArrowLeft: {rowChange: 0, colChange: -1},
     ArrowRight: {rowChange: 0, colChange: 1},
 };
+
 function handleKeyPress(event){
 
-    gameBoard = moveAllTilesDepricated(event.key, gameBoard);
-
+    gameBoard = moveAllTilesOne(event.key, gameBoard);
+    
     //gameBoard = moveAllTiles(event.key, gameBoard);
 
     displayGameBoard(gameBoard);

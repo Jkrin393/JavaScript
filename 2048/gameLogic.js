@@ -1,5 +1,6 @@
 //add either a two or a four to a random open spot in the board. Logic: create a list of empty cell's coordiantes, then randomize which one is chosen
 
+//consider moving createEmpty list to a seperate file for reusability
 function addTile(gameBoard){
     var emptyCellList = [];
     //add empty cell address to list
