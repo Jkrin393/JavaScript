@@ -1,88 +1,79 @@
-//check if new location is inside the board
-function isValidPosition(row, col) {
-    return row >= 0 && row < BOARD_SIZE && col >= 0 && col < BOARD_SIZE;
-}
-
-function moveLeft(gameboard){
-    for (let row of gameboard) {
-        for (let i = 0; i < row.length; i++) {
-            if(i == 0){
-                row[i] = row[i] + row[i+1]
-            }
-            else if (i + 1 >= row.length) {
-                row[i] = 0;
-            } else {
-                row[i] = row[i + 1];
-            }
-        }
-    }
-}
-
-function moveRight(gameboard) {
-    for (let row = 0; row < gameboard.length; row++) {
-        for (let i = gameboard[row].length - 1; i > 0; i--) {
-            if(i == gameboard[row].length-1){
-                gameboard[row][i]+=gameboard[row][i - 1]
-            }
-            else
-                gameboard[row][i] = gameboard[row][i - 1];
-        }
-        gameboard[row][0] = 0;
-    }
-}
-
-function moveUp(gameboard) {
-    for (let col = 0; col < gameboard[0].length; col++) {
-        for (let row = 0; row < gameboard.length - 1; row++) {
-            if(row ==0){
-                gameboard[row][col] += gameboard[row + 1][col];
-            }
-            else
-                gameboard[row][col] = gameboard[row + 1][col];
-        }
-        gameboard[gameboard.length - 1][col] = 0;
-    }
-}
-
-function moveDown(gameboard) {
-    for (let col = 0; col < gameboard[0].length; col++) {
-        for (let row = gameboard.length - 1; row > 0; row--) {
-            if(row == gameboard.length - 1)
-                gameboard[row][col] += gameboard[row - 1][col];
-            else
-                gameboard[row][col] = gameboard[row - 1][col];
-        }
-        gameboard[0][col] = 0;
-    }
-}
+//new idea, all tile moves are a left move, rotate grid to allow this. Don't need to worry about out of bounds conditions
 
 
-function moveAllTiles(keyPressed, gameBoard){
+
+function rotateBoard(gameboard){
     
-
-    console.log(keyPressed);
-    switch (keyPressed) {
-        case `ArrowLeft`:
-            moveLeft(gameBoard);
-            break;
-        case `ArrowRight`:
-            moveRight(gameBoard);
-            break;        
-        case `ArrowUp`:
-            moveUp(gameBoard);
-            break;
-        case `ArrowDown`:
-            moveDown(gameBoard);
-            break;        
-        default:
-            console.log("not recognized");
-            break;
+    let rotatedBoard = [];
+    for(let col = BOARD_SIZE - 1;col >=0;col--){
+        let newRow = [];
+        for(let row = 0;row<BOARD_SIZE;row++){
+            newRow.push(gameboard[row][col]);
+        }
+        rotatedBoard.push(newRow);
     }
-    addTile(gameBoard);
-    return gameBoard;
-        
+
+    return rotatedBoard;
+
+}
+
+//check for mergable values starting at col 1. If it can merge, double in place, push 0, col[row-1] is pushes off the array
+function mergeRow(row){
+    
+    for(let col = 1;col < BOARD_SIZE;col++){
+        row[col] += row[col];
+        row.push(0);
+    }
+
+    return row;
 
 }
 
 
+function moveAndMerge(direction, gameBoard){
+    
+    const arrowValMap = {
+        ArrowLeft: 0,
+        ArrowDown: 3, 
+        ArrowRight: 2,
+        ArrowUp: 1,
 
+    };
+
+    //rotate so movement is left
+    numRotations = arrowValMap[direction];
+    for(let i = 0; i<numRotations;i++){
+        gameBoard = rotateBoard(gameBoard);
+
+    }
+
+    for (let row of gameBoard) {
+        for (let col = 1; col < BOARD_SIZE; col++) {
+            
+            if(i=0){
+                //logik
+            }
+
+
+            if(col + 1 >= BOARD_SIZE){
+                row[col] = 0;
+                //want to do this with push(0) instead
+            }
+            else if(row[col] === row[col+1]){
+                row[col+1]*=2;
+                row.push(0);
+                
+            }
+        }
+    }
+    //rotate to original position
+    for(let i = 0; i<BOARD_SIZE - numRotations;i++){
+        gameBoard = rotateBoard(gameBoard);
+
+    }
+
+
+
+    return gameBoard;
+
+}
